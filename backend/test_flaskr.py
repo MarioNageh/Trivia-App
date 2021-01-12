@@ -15,7 +15,8 @@ class TriviaTestCase(unittest.TestCase):
         self.app = create_app()
         self.client = self.app.test_client
         self.database_name = "trivia_test"
-        self.database_path = "postgres://postgres:Mario123!@#@{}/{}".format('localhost:5432', self.database_name)
+        self.database_path = "postgres://postgres:Mario123!@#@{}/{}".format(
+            'localhost:5432', self.database_name)
         setup_db(self.app, self.database_path)
 
         self.new_question = {
@@ -65,18 +66,21 @@ class TriviaTestCase(unittest.TestCase):
     def test_delete_question(self):
         # This Test Will Remove The Last question
         # This Test Must run after test_add_new_question Test
-        lastInsertedQuestion = Question.query.order_by(Question.id.desc()).first()
+        lastInsertedQuestion = Question.query.order_by(
+            Question.id.desc()).first()
         reques = self.client().delete(f'/questions/{lastInsertedQuestion.id}')
         self.assertEqual(reques.status_code, 200)
 
     def test_delete_question_fail(self):
-        # 999999999999999999999999999999999999 Is Inavlid Id So Will Generate Error
+        # 999999999999999999999999999999999999 Is Inavlid Id So Will Generate
+        # Error
         reques = self.client().delete(f'/questions/999999999999999999999999999999999999')
         self.assertEqual(reques.status_code, 422)
 
     # /categories/<int:ct_id>/questions
     def test_get_specific_question_category(self):
-        #     We Will Insert New Category , New Question belong to this category and get them
+        # We Will Insert New Category , New Question belong to this category
+        # and get them
         category = Category('Test')
         category.insert()
         newQuestion = Question('Test Question ?', "True", category.id, 5)
@@ -103,6 +107,13 @@ class TriviaTestCase(unittest.TestCase):
             "previous_questions": []
         })
         self.assertEqual(request.status_code, 200)
+    # quiz_category Not Included
+
+    def test_quizz_fail(self):
+        request = self.client().post('/quizzes', json={
+            "previous_questions": []
+        })
+        self.assertEqual(request.status_code, 400)
     """
     TODO
     Write at least one test for each test for successful operation and for expected errors.

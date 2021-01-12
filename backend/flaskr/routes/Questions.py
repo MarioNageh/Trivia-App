@@ -7,6 +7,7 @@ from flaskr.utils import helper
 questions = Blueprint('questions', __name__)
 helperUtils = helper()
 
+
 @questions.route('/search/question', methods=['POST'])
 def search_question():
     try:
@@ -30,6 +31,7 @@ def search_question():
     except Exception as e:
         print(e)
         abort(422, 'Unprossable')
+
 
 @questions.route('/questions', methods=['POST'])
 def add_new_question():
@@ -57,19 +59,21 @@ def add_new_question():
             'question': question.format()
         })
 
+
 @questions.route('/questions', methods=['GET'])
 def get_questions():
     questions = Question.query.all()
     if len(questions) == 0:
         abort(404, 'Not Found')
     return jsonify({
-      'questions': [q.format()
-                    for q
-                    in helperUtils.paganation(request, questions)],
-      'total_questions': len(questions),
-      'categories': [cat.format() for cat in Category.query.all()],
-      'current_category': None
+        'questions': [q.format()
+                      for q
+                      in helperUtils.paganation(request, questions)],
+        'total_questions': len(questions),
+        'categories': [cat.format() for cat in Category.query.all()],
+        'current_category': None
     })
+
 
 @questions.route('/questions/<int:question_id>', methods=['DELETE'])
 def delete_question(question_id):
